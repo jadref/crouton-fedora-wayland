@@ -5,9 +5,14 @@
 
 # This file is sourced from main.sh to update distro-specific defaults.
 # It must set at least ARCH and MIRROR if not already specified.
+f [ -z "$ARCH" ]; then
+    ARCH="`uname -m | sed -e 's i.86 i386 ;s arm.* armhfp '`"
+fi
 
-if [ -z "$ARCH" ]; then
-    ARCH="`uname -m | sed -e 's i.86 i386 ;s arm.* armhfp ;'`"
+if [ "$ARCH" = "i386" ] || [ "$ARCH" = "armhfp" ]; then
+    RELEASEDIR="fedora/linux"
+else
+    RELEASEDIR="fedora-secondary"
 fi
 
 # Latest Koji builds
@@ -21,5 +26,5 @@ fi
 
 # Wayland support: (need F26 for new GTK3)
 if [ -z "$MIRROR" ]; then
-    MIRROR="${CROUTON_MIRROR_fedora:-https://download.fedoraproject.org/pub/fedora/linux/releases/26/Docker/$ARCH/images/Fedora-Docker-Base-26-1.5.$ARCH.tar.xz}"
+    MIRROR="${CROUTON_MIRROR_fedora:-https://download.fedoraproject.org/pub/${RELEASEDIR}/releases/26/Docker/$ARCH/images/Fedora-Docker-Base-26-1.5.$ARCH.tar.xz}"
 fi
